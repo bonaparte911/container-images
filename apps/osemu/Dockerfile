@@ -37,6 +37,7 @@ USER kah
 EXPOSE 11000/udp
 
 COPY ./apps/osemu/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 CMD ["/entrypoint.sh"]
 
 LABEL \
