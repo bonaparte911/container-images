@@ -5,7 +5,6 @@ ARG VERSION
 
 USER root
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3008,DL3013,DL3015,SC2086
 RUN \
   export EXTRA_INSTALL_ARG="build-essential git"; \
