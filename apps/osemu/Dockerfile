@@ -33,7 +33,7 @@ RUN \
   && printf "umask %d" "${UMASK}" >> /etc/bash.bashrc \
   && update-ca-certificates
 
-USER kah
+#USER kah
 
 EXPOSE 11000/udp
 
