@@ -25,7 +25,7 @@ RUN \
   && apt-get clean \
   && \
   rm -rf \
-    /tmp/* \
+    /tmp/osemu \
     /var/lib/apt/lists/* \
     /var/tmp/ \
   && chown -R kah:kah /app \
