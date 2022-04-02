@@ -31,7 +31,7 @@ jobs:
         list-files: json
         filters: |
           changed:
-          - 'apps/oscam/**'
+          - 'apps/osemu/**'
     - run: echo '${{ toJson(steps.filter.outputs) }}' > changes.json
     - id: reduce
       run: |
