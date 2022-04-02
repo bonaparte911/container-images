@@ -6,10 +6,10 @@ on:
     branches:
     - main
     paths:
-    - 'apps/oscam/**'
+    - 'apps/osemu/**'
   pull_request:
     paths:
-    - 'apps/oscam/**'
+    - 'apps/osemu/**'
 
 env:
   # How long to sleep before running the tests (gives the application time to start)
