@@ -1,41 +1,45 @@
 # hadolint ignore=DL3007
-FROM ghcr.io/k8s-at-home/ubuntu:latest
+FROM ghcr.io/k8s-at-home/alpine:latest
 
 ARG VERSION
+ENV UMASK=0002
 
 USER root
 
+RUN \
+  adduser -u 568 -SDH kah kah &&\
+  mkdir -p /config /app &&\
+  chown -R kah. /config /app &&\
+  chmod -R 775 /config &&\
+  chmod -R u=rwX,go=rX /app
+
 # hadolint ignore=DL3008,DL3013,DL3015,SC2086
 RUN \
-  export EXTRA_INSTALL_ARG="build-essential git"; \
-  apt-get -qq update \
+  echo "**** install build packages ****" &&\
+  apk -q update &&\
+  apk add -q --no-cache --virtual=build-dependencies \
+    build-base \
+    git \
   && \
-  apt-get -qq install -y \
-    ${EXTRA_INSTALL_ARG} \
-  && \
-  git clone --depth 1 https://github.com/oscam-emu/OSEmu /tmp/osemu \
-  && cd /tmp/osemu \
-  && make -j"$(nproc)" \
-  && mv OSEmu /app/OSEmu \
-  && \
-  apt-get remove -y ${EXTRA_INSTALL_ARG} \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && apt-get autoremove -y \
-  && apt-get clean \
-  && \
+  echo "**** compile OSEmu ****" &&\
+  git clone --depth 1 https://github.com/oscam-emu/OSEmu /tmp/osemu &&\
+  cd /tmp/osemu &&\
+  make -j"$(nproc)" &&\
+  cd /tmp/osemu &&\
+  cp OSEmu /app/OSEmu &&\
+  echo "**** clean up ****" &&\
+  apk del --purge build-dependencies &&\
   rm -rf \
     /tmp/osemu \
-    /var/lib/apt/lists/* \
     /var/tmp/ \
-  && chown -R kah:kah /app \
-  && chmod -R u=rwX,go=rX /app \
   && printf "umask %d" "${UMASK}" >> /etc/bash.bashrc \
   && update-ca-certificates
 
-#USER kah
-
+USER kah
+VOLUME [ "/config" ]
 EXPOSE 11000/udp
 
+COPY ./apps/osemu/shim /shim
 COPY ./apps/osemu/entrypoint.sh /entrypoint.sh
 CMD ["/entrypoint.sh"]
 
