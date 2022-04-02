@@ -6,12 +6,10 @@ on:
     branches:
     - main
     paths:
-    - 'apps/**'
-    - 'base/**'
+    - 'apps/oscam/**'
   pull_request:
     paths:
-    - 'apps/**'
-    - 'base/**'
+    - 'apps/oscam/**'
 
 env:
   # How long to sleep before running the tests (gives the application time to start)
@@ -33,8 +31,7 @@ jobs:
         list-files: json
         filters: |
           changed:
-          - 'apps/**'
-          - 'base/**'
+          - 'apps/oscam/**'
     - run: echo '${{ toJson(steps.filter.outputs) }}' > changes.json
     - id: reduce
       run: |
