@@ -1,0 +1,8 @@
+---
+process:
+  OSEmu:
+    running: true
+
+port:
+  udp:11000:
+    listening: true
