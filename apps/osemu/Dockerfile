@@ -35,12 +35,19 @@ RUN \
   && printf "umask %d" "${UMASK}" >> /etc/bash.bashrc \
   && update-ca-certificates
 
-USER kah
 VOLUME [ "/config" ]
 EXPOSE 11000/udp
 
 COPY ./apps/osemu/shim /shim
 COPY ./apps/osemu/entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh && \
+  chown -R kah. /entrypoint.sh
+RUN chmod +x /shim/* &&\
+    chown -R kah. /shim
+
+USER kah
+
 CMD ["/entrypoint.sh"]
 
 LABEL \
