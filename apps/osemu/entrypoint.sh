@@ -5,4 +5,7 @@ source "/shim/umask.sh"
 source "/shim/vpn.sh"
 source "/shim/greeting.sh"
 
-exec /app/OSEmu -c /config -p 11000 ${EXTRA_ARGS}
+FOO="${OSEMU_USER:=user}"  
+FOO="${OSEMU_PASSWORD:=password}"
+
+exec /app/OSEmu -a ${OSEMU_USER}:${OSEMU_PASSWORD} -c /config -p 11000 ${EXTRA_ARGS}
