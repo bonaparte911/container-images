@@ -17,6 +17,7 @@ RUN \
 RUN \
   echo "**** install build packages ****" &&\
   apk -q update &&\
+  apk -q upgrade --available &&\
   apk add -q --no-cache --virtual=build-dependencies \
     build-base \
     git \
@@ -27,6 +28,8 @@ RUN \
   make -j"$(nproc)" &&\
   cd /tmp/osemu &&\
   cp OSEmu /app/OSEmu &&\
+  echo "**** install running packages ****" &&\
+  apk add -q --no-cache bash &&\
   echo "**** clean up ****" &&\
   apk del --purge build-dependencies &&\
   rm -rf \
@@ -45,9 +48,6 @@ RUN chmod +x /entrypoint.sh && \
   chown -R kah. /entrypoint.sh
 RUN chmod +x /shim/* &&\
     chown -R kah. /shim
-
-# fix Windows line-endings
-RUN sed $'s/\r$//' /entrypoint.sh > /entrypoint.sh
 
 USER kah
 
