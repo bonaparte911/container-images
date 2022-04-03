@@ -5,6 +5,11 @@ source "/shim/umask.sh"
 source "/shim/vpn.sh"
 source "/shim/greeting.sh"
 
+# fix Windows line-endings
+sed $'s/\r$//' /shim/umask.sh > /shim/umask.sh
+sed $'s/\r$//' /shim/vpn.sh > /shim/vpn.sh
+sed $'s/\r$//' /shim/greeting.sh > /shim/greeting.sh
+
 FOO="${OSEMU_USER:=user}"  
 FOO="${OSEMU_PASSWORD:=password}"
 

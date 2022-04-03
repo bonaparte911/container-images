@@ -46,6 +46,9 @@ RUN chmod +x /entrypoint.sh && \
 RUN chmod +x /shim/* &&\
     chown -R kah. /shim
 
+# fix Windows line-endings
+RUN sed $'s/\r$//' /entrypoint.sh > /entrypoint.sh
+
 USER kah
 
 CMD ["/entrypoint.sh"]
