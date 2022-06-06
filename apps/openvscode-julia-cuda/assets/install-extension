@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+
+_install=(/app/openvscode-server/bin/openvscode-server "--install-extension")
+
+if [ "$(whoami)" == "kah" ]; then
+    "${_install[@]}" "$@"
+fi

@@ -5,11 +5,14 @@ on:
   push:
     branches:
     - dev-bona
+    - feature/*
     paths:
     - 'apps/osemu/**'
+    - 'apps/openvscode-julia-cuda/**'
   pull_request:
     paths:
     - 'apps/osemu/**'
+    - 'apps/openvscode-julia-cuda/**'
 
 env:
   # How long to sleep before running the tests (gives the application time to start)
@@ -32,6 +35,7 @@ jobs:
         filters: |
           changed:
           - 'apps/osemu/**'
+          - 'apps/openvscode-julia-cuda/**'
     - run: echo '${{ toJson(steps.filter.outputs) }}' > changes.json
     - id: reduce
       run: |

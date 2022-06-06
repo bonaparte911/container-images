@@ -1,0 +1,8 @@
+---
+process:
+  openvscode-server:
+    running: true
+
+port:
+  tcp:3000:
+    listening: true
