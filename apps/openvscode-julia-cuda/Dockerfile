@@ -8,7 +8,7 @@ ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
 ENV JULIA_VERSION=1.7.3
-ENV CODE_VERSION=1.67.2
+ENV CODE_VERSION=1.68.0
 
 ENV JULIA_DEPOT_PATH=/usr/local/share/julia
 ENV JULIA_HISTORY=/data/logs/repl_history.jl
@@ -195,13 +195,18 @@ RUN \
     /var/cache/apt/* \
     /var/tmp/*
 
-USER kah
 VOLUME [ "/config" ]
 EXPOSE 3000/tcp
 
 COPY ./apps/openvscode-julia-cuda/shim /shim
 COPY ./apps/openvscode-julia-cuda/entrypoint.sh /entrypoint.sh
 
+RUN chmod +x /entrypoint.sh && \
+  chown -R kah. /entrypoint.sh
+RUN chmod +x /shim/* &&\
+    chown -R kah. /shim
+
+USER kah
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD ["/entrypoint.sh"]
 

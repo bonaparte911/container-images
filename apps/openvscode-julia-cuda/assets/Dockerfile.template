@@ -195,13 +195,18 @@ RUN \
     /var/cache/apt/* \
     /var/tmp/*
 
-USER kah
 VOLUME [ "/config" ]
 EXPOSE 3000/tcp
 
 COPY ./apps/openvscode-julia-cuda/shim /shim
 COPY ./apps/openvscode-julia-cuda/entrypoint.sh /entrypoint.sh
 
+RUN chmod +x /entrypoint.sh && \
+  chown -R kah. /entrypoint.sh
+RUN chmod +x /shim/* &&\
+    chown -R kah. /shim
+
+USER kah
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD ["/entrypoint.sh"]
 
