@@ -152,6 +152,7 @@ RUN \
     unset JULIA_RELEASE
 
 ENV JULIA_DEPOT_PATH="/data:${JULIA_DEPOT_PATH}"
+VOLUME [ "/data" ]
 
 # 3) VSCODE SERVER
 ENV HOME="/config"

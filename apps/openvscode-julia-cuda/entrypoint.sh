@@ -10,9 +10,6 @@ source "/shim/umask.sh"
 source "/shim/vpn.sh"
 source "/shim/greeting.sh"
 
-FOO="${OSEMU_USER:=user}"  
-FOO="${OSEMU_PASSWORD:=password}"
-
 if [ -n "$CONNECTION_SECRET" ]; then
     EXTRA_ARGS="${EXTRA_ARGS} --connection-secret ${CONNECTION_SECRET}"
     echo "Using connection secret from ${CONNECTION_SECRET}"
