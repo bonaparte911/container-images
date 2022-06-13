@@ -184,10 +184,6 @@ RUN \
     chown -R kah:kah /app/openvscode-server && \
     chmod -R 775 /app/openvscode-server && \
     chmod +x /usr/local/bin/install-extension && \
-  echo "**** install extensions ****" && \
-    install-extension julialang.language-julia && \
-    install-extension singularitti.vscode-julia-formatter && \
-    install-extension bungcip.better-toml && \
   echo "**** clean up ****" && \
   apt-get clean && \
   rm -rf \
