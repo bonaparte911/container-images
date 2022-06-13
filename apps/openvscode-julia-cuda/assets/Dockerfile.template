@@ -25,7 +25,8 @@ ENV \
   DEBCONF_NONINTERACTIVE_SEEN=true \
   DEBIAN_FRONTEND="noninteractive" \
   APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn \
-  UMASK=0002
+  UMASK=0002 \
+  SHELL="/bin/bash"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -37,6 +38,8 @@ RUN \
     --system \
     --disabled-password \
     --no-create-home \
+    # VS Code needs a shell
+    --shell /bin/bash \
     && \
     mkdir -p /config /app /data \
     && chown -R kah:kah /config /app /data\
