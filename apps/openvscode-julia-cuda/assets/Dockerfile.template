@@ -145,12 +145,12 @@ RUN \
     else \
       exit 1; \
     fi && \
-    mkdir -p "/usr/local/share/julia/environments/v${JULIA_RELEASE}/" && \
+    mkdir -p "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
     cp /tmp/Project.toml "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
     julia -e "using Pkg; Pkg.instantiate(); Pkg.API.precompile()" && \
     julia -e "using CUDA; CUDA.precompile_runtime()" && \
-    # chmod 644 "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/*/*.bc" && \
     # TODO: fix this in GPUCompiler.jl
+    chmod -R 644 "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/" && \
   echo "**** clean up ****" && \
     unset JULIA_RELEASE
 

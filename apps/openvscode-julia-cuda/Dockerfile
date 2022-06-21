@@ -8,7 +8,7 @@ ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
 ENV JULIA_VERSION=1.7.3
-ENV CODE_VERSION=1.68.0
+ENV CODE_VERSION=1.68.1
 
 ENV JULIA_DEPOT_PATH=/usr/local/share/julia
 ENV JULIA_HISTORY=/data/logs/repl_history.jl
@@ -145,12 +145,12 @@ RUN \
     else \
       exit 1; \
     fi && \
-    mkdir -p "/usr/local/share/julia/environments/v${JULIA_RELEASE}/" && \
+    mkdir -p "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
     cp /tmp/Project.toml "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
     julia -e "using Pkg; Pkg.instantiate(); Pkg.API.precompile()" && \
     julia -e "using CUDA; CUDA.precompile_runtime()" && \
-    # chmod 644 "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/*/*.bc" && \
     # TODO: fix this in GPUCompiler.jl
+    chmod -R 644 "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/" && \
   echo "**** clean up ****" && \
     unset JULIA_RELEASE
 
