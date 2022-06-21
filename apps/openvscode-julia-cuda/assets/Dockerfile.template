@@ -150,7 +150,7 @@ RUN \
     julia -e "using Pkg; Pkg.instantiate(); Pkg.API.precompile()" && \
     julia -e "using CUDA; CUDA.precompile_runtime()" && \
     # TODO: fix this in GPUCompiler.jl
-    chmod -R 644 "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/" && \
+    chown -R kah. "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/" && \
   echo "**** clean up ****" && \
     unset JULIA_RELEASE
 
