@@ -7,8 +7,8 @@ FROM nvcr.io/nvidia/cuda:${CUDA_VERSION}
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
-ENV JULIA_VERSION=1.8.1
-ENV CODE_VERSION=1.71.2
+ENV JULIA_VERSION=1.8.2
+ENV CODE_VERSION=1.73.0
 
 ENV JULIA_DEPOT_PATH=/usr/local/share/julia
 ENV JULIA_HISTORY=/data/logs/repl_history.jl
@@ -130,7 +130,7 @@ RUN \
       /var/tmp/*
 
 # 2) JULIA
-COPY ./apps/openvscode-julia-cuda/assets/Project.toml /tmp/
+COPY ./apps/openvscode-julia-cuda/Project.toml /tmp/
 RUN \
   echo "**** install JULIA ****" && \
     echo "julia version: ${JULIA_VERSION}" && \

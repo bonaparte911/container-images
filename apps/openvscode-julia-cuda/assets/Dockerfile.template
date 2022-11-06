@@ -130,7 +130,7 @@ RUN \
       /var/tmp/*
 
 # 2) JULIA
-COPY ./apps/openvscode-julia-cuda/assets/Project.toml /tmp/
+COPY ./apps/openvscode-julia-cuda/Project.toml /tmp/
 RUN \
   echo "**** install JULIA ****" && \
     echo "julia version: ${JULIA_VERSION}" && \
