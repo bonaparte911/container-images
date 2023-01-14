@@ -7,8 +7,8 @@ FROM nvcr.io/nvidia/cuda:${CUDA_VERSION}
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
-ENV JULIA_VERSION=1.8.3
-ENV CODE_VERSION=1.73.1
+ENV JULIA_VERSION=1.7.3
+ENV CODE_VERSION=1.74.3
 
 ENV JULIA_DEPOT_PATH=/usr/local/share/julia
 ENV JULIA_HISTORY=/data/logs/repl_history.jl
@@ -32,18 +32,18 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN \
   echo "**** set up user and folders ****" && \
-    adduser kah \
-    --uid 568 \
-    --group \
-    --system \
-    --disabled-password \
-    --no-create-home \
-    # VS Code needs a shell
-    --shell /bin/bash \
-    && \
-    mkdir -p /config /app /data \
-    && chown -R kah:kah /config /app /data\
-    && chmod -R 775 /config /app /data
+  adduser kah \
+  --uid 568 \
+  --group \
+  --system \
+  --disabled-password \
+  --no-create-home \
+  # VS Code needs a shell
+  --shell /bin/bash \
+  && \
+  mkdir -p /config /app /data \
+  && chown -R kah:kah /config /app /data\
+  && chmod -R 775 /config /app /data
 
 WORKDIR /app
 
@@ -51,108 +51,108 @@ WORKDIR /app
 RUN \
   set -eux && \
   echo "**** install runtime dependencies ****" \
-    && echo 'APT::Install-Recommends "false";' >/etc/apt/apt.conf.d/00recommends \
-    && echo 'APT::Install-Suggests "false";' >>/etc/apt/apt.conf.d/00recommends \
-    && echo 'APT::Get::Install-Recommends "false";' >>/etc/apt/apt.conf.d/00recommends \
-    && echo 'APT::Get::Install-Suggests "false";' >>/etc/apt/apt.conf.d/00recommends \
-    && \
-    apt-get -qq update \
-    && \
-    apt-get install -y \
-      bash \
-      ca-certificates \
-      curl \
-      dnsutils \
-      jq \
-      locales \
-      lsb-release \
-      tini \
-      tzdata \
-      vim-tiny \ 
-    && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
-    && ln -s /usr/bin/vim.tiny /usr/local/bin/vi \
-    && ln -s /usr/bin/vim.tiny /usr/local/bin/vim \
-    && ln -s /usr/bin/vim.tiny /usr/local/bin/nano \
-    && ln -s /usr/bin/vim.tiny /usr/local/bin/emacs \
-    && \
-    printf "/bin/bash /shim/greeting.sh\n" >> /etc/bash.bashrc \
-    && \
+  && echo 'APT::Install-Recommends "false";' >/etc/apt/apt.conf.d/00recommends \
+  && echo 'APT::Install-Suggests "false";' >>/etc/apt/apt.conf.d/00recommends \
+  && echo 'APT::Get::Install-Recommends "false";' >>/etc/apt/apt.conf.d/00recommends \
+  && echo 'APT::Get::Install-Suggests "false";' >>/etc/apt/apt.conf.d/00recommends \
+  && \
+  apt-get -qq update \
+  && \
+  apt-get install -y \
+  bash \
+  ca-certificates \
+  curl \
+  dnsutils \
+  jq \
+  locales \
+  lsb-release \
+  tini \
+  tzdata \
+  vim-tiny \ 
+  && \
+  localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+  && ln -s /usr/bin/vim.tiny /usr/local/bin/vi \
+  && ln -s /usr/bin/vim.tiny /usr/local/bin/vim \
+  && ln -s /usr/bin/vim.tiny /usr/local/bin/nano \
+  && ln -s /usr/bin/vim.tiny /usr/local/bin/emacs \
+  && \
+  printf "/bin/bash /shim/greeting.sh\n" >> /etc/bash.bashrc \
+  && \
   echo "**** clean up ****" && \
-    apt-get remove -y jq \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-    && apt-get autoremove -y \
-    && apt-get clean \
-    && \
-    rm -rf \
-      /tmp/* \
-      /var/lib/apt/lists/* \
-      /var/cache/apt/* \
-      /var/tmp/*
+  apt-get remove -y jq \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && apt-get autoremove -y \
+  && apt-get clean \
+  && \
+  rm -rf \
+  /tmp/* \
+  /var/lib/apt/lists/* \
+  /var/cache/apt/* \
+  /var/tmp/*
 
 ENV LANG en_US.UTF-8
 
 # hadolint ignore=DL3008,DL3015,SC2155
 RUN \
   echo "**** install go ****" && \
-    export GO_VERSION=1.16 \
-    && export GOPATH=/go \
-    && export DISTRO="$(lsb_release -s -c)" \
-    && \
-    apt-get update -yq \
-    && apt-get install -yq \
-      gnupg \
-    && apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 52B59B1571A79DBC054901C0F6BC817356A3D45E \
-    && echo "deb http://ppa.launchpad.net/longsleep/golang-backports/ubuntu $DISTRO main" | tee /etc/apt/sources.list.d/gosource.list \
-    && echo "deb-src http://ppa.launchpad.net/longsleep/golang-backports/ubuntu $DISTRO main" | tee -a /etc/apt/sources.list.d/gosource.list \
-    && apt-get update -yq \
-    && apt-get install -yq \
-      golang-${GO_VERSION} \
-    && \
-    /usr/lib/go-${GO_VERSION}/bin/go install github.com/drone/envsubst/cmd/envsubst@latest \
-    && mv /go/bin/envsubst /usr/local/bin/envsubst \
-    && envsubst --version \
-    && \
+  export GO_VERSION=1.16 \
+  && export GOPATH=/go \
+  && export DISTRO="$(lsb_release -s -c)" \
+  && \
+  apt-get update -yq \
+  && apt-get install -yq \
+  gnupg \
+  && apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 52B59B1571A79DBC054901C0F6BC817356A3D45E \
+  && echo "deb http://ppa.launchpad.net/longsleep/golang-backports/ubuntu $DISTRO main" | tee /etc/apt/sources.list.d/gosource.list \
+  && echo "deb-src http://ppa.launchpad.net/longsleep/golang-backports/ubuntu $DISTRO main" | tee -a /etc/apt/sources.list.d/gosource.list \
+  && apt-get update -yq \
+  && apt-get install -yq \
+  golang-${GO_VERSION} \
+  && \
+  /usr/lib/go-${GO_VERSION}/bin/go install github.com/drone/envsubst/cmd/envsubst@latest \
+  && mv /go/bin/envsubst /usr/local/bin/envsubst \
+  && envsubst --version \
+  && \
   echo "**** clean up ****" && \
-    apt-get remove -y gnupg golang-${GO_VERSION} \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-    && apt-get autoremove -y \
-    && apt-get clean \
-    && unset GO_VERSION \
-    && unset GOPATH \
-    && unset DISTRO \
-    && \
-    rm -rf \
-      /go \
-      /tmp/* \
-      /var/lib/apt/lists/* \
-      /var/cache/apt/* \
-      /var/tmp/*
+  apt-get remove -y gnupg golang-${GO_VERSION} \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && apt-get autoremove -y \
+  && apt-get clean \
+  && unset GO_VERSION \
+  && unset GOPATH \
+  && unset DISTRO \
+  && \
+  rm -rf \
+  /go \
+  /tmp/* \
+  /var/lib/apt/lists/* \
+  /var/cache/apt/* \
+  /var/tmp/*
 
 # 2) JULIA
 COPY ./apps/openvscode-julia-cuda/Project.toml /tmp/
 RUN \
   echo "**** install JULIA ****" && \
-    echo "julia version: ${JULIA_VERSION}" && \
-    JULIA_RELEASE=$(echo "${JULIA_VERSION}" | cut -d. -f 1,2) &&\
-    echo "julia release: ${JULIA_RELEASE}" && \
-    if [ ${TARGETPLATFORM} == "linux/amd64" ]; then \
-      curl -s -L "https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_RELEASE}/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" | \
-      tar -C /usr/local -x -z --strip-components=1 -f - ;  \
-    elif [ ${TARGETPLATFORM} == "linux/arm64" ]; then \
-      curl -s -L "https://julialang-s3.julialang.org/bin/linux/aarch64/${JULIA_RELEASE}/julia-${JULIA_VERSION}-linux-aarch64.tar.gz" | \
-      tar -C /usr/local -x -z --strip-components=1 -f - ; \
-    else \
-      exit 1; \
-    fi && \
-    mkdir -p "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
-    cp /tmp/Project.toml "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
-    julia -e "using Pkg; Pkg.instantiate(); Pkg.API.precompile()" && \
-    julia -e "using CUDA; CUDA.precompile_runtime()" && \
-    # TODO: fix this in GPUCompiler.jl
-    chown -R kah. "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/" && \
+  echo "julia version: ${JULIA_VERSION}" && \
+  JULIA_RELEASE=$(echo "${JULIA_VERSION}" | cut -d. -f 1,2) &&\
+  echo "julia release: ${JULIA_RELEASE}" && \
+  if [ ${TARGETPLATFORM} == "linux/amd64" ]; then \
+  curl -s -L "https://julialang-s3.julialang.org/bin/linux/x64/${JULIA_RELEASE}/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" | \
+  tar -C /usr/local -x -z --strip-components=1 -f - ;  \
+  elif [ ${TARGETPLATFORM} == "linux/arm64" ]; then \
+  curl -s -L "https://julialang-s3.julialang.org/bin/linux/aarch64/${JULIA_RELEASE}/julia-${JULIA_VERSION}-linux-aarch64.tar.gz" | \
+  tar -C /usr/local -x -z --strip-components=1 -f - ; \
+  else \
+  exit 1; \
+  fi && \
+  mkdir -p "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
+  cp /tmp/Project.toml "${JULIA_DEPOT_PATH}/environments/v${JULIA_RELEASE}/" && \
+  julia -e "using Pkg; Pkg.instantiate(); Pkg.API.precompile()" && \
+  julia -e "using CUDA; CUDA.precompile_runtime()" && \
+  # TODO: fix this in GPUCompiler.jl
+  chown -R kah. "${JULIA_DEPOT_PATH}/compiled/v${JULIA_RELEASE}/GPUCompiler/" && \
   echo "**** clean up ****" && \
-    unset JULIA_RELEASE
+  unset JULIA_RELEASE
 
 ENV JULIA_DEPOT_PATH="/data:${JULIA_DEPOT_PATH}"
 
@@ -164,35 +164,35 @@ COPY ./apps/openvscode-julia-cuda/assets/install-extension /usr/local/bin/
 # hadolint ignore=DL3008,DL3015
 RUN \
   echo "**** install runtime dependencies ****" && \
-    apt-get update && \
-    apt-get install -y \
-      git \
-      jq \
-      libatomic1 \
-      nano \
-      net-tools && \
-    echo "**** install openvscode-server ****" && \
-    mkdir -p /app/openvscode-server && \
-    if [ ${TARGETPLATFORM} == "linux/amd64" ]; then \
-      curl -s -L "https://github.com/gitpod-io/openvscode-server/releases/download/openvscode-server-v${CODE_VERSION}/openvscode-server-v${CODE_VERSION}-linux-x64.tar.gz" | \
-      tar -C /app/openvscode-server/ -x -z --strip-components=1 -f - ;  \
-    elif [ ${TARGETPLATFORM} == "linux/arm64" ]; then \
-      curl -s -L "https://github.com/gitpod-io/openvscode-server/releases/download/openvscode-server-v${CODE_VERSION}/openvscode-server-v${CODE_VERSION}-linux-arm64.tar.gz" | \
-      tar -C /app/openvscode-server/ -x -z --strip-components=1 -f - ;  \
-    else \
-      exit 1; \
-    fi && \
+  apt-get update && \
+  apt-get install -y \
+  git \
+  jq \
+  libatomic1 \
+  nano \
+  net-tools && \
+  echo "**** install openvscode-server ****" && \
+  mkdir -p /app/openvscode-server && \
+  if [ ${TARGETPLATFORM} == "linux/amd64" ]; then \
+  curl -s -L "https://github.com/gitpod-io/openvscode-server/releases/download/openvscode-server-v${CODE_VERSION}/openvscode-server-v${CODE_VERSION}-linux-x64.tar.gz" | \
+  tar -C /app/openvscode-server/ -x -z --strip-components=1 -f - ;  \
+  elif [ ${TARGETPLATFORM} == "linux/arm64" ]; then \
+  curl -s -L "https://github.com/gitpod-io/openvscode-server/releases/download/openvscode-server-v${CODE_VERSION}/openvscode-server-v${CODE_VERSION}-linux-arm64.tar.gz" | \
+  tar -C /app/openvscode-server/ -x -z --strip-components=1 -f - ;  \
+  else \
+  exit 1; \
+  fi && \
   echo "**** set permissions ****" && \
-    chown -R kah:kah /app/openvscode-server && \
-    chmod -R 775 /app/openvscode-server && \
-    chmod +x /usr/local/bin/install-extension && \
+  chown -R kah:kah /app/openvscode-server && \
+  chmod -R 775 /app/openvscode-server && \
+  chmod +x /usr/local/bin/install-extension && \
   echo "**** clean up ****" && \
   apt-get clean && \
   rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/cache/apt/* \
-    /var/tmp/*
+  /tmp/* \
+  /var/lib/apt/lists/* \
+  /var/cache/apt/* \
+  /var/tmp/*
 
 VOLUME [ "/config" ]
 EXPOSE 3000/tcp
@@ -203,7 +203,7 @@ COPY ./apps/openvscode-julia-cuda/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && \
   chown -R kah. /entrypoint.sh
 RUN chmod +x /shim/* &&\
-    chown -R kah. /shim
+  chown -R kah. /shim
 
 USER kah
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
